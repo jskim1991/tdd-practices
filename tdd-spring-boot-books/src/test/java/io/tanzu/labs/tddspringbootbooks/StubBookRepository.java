@@ -27,11 +27,21 @@ public class StubBookRepository implements BookRepository {
 
     }
 
+    @Override
+    public void update(int id, UpdateBook updateBook) {
+
+    }
+
+
     public void setData(List<Book> data) {
         this.data = data;
     }
 
     public void setSingleData(Book singleData) {
         this.singleData = singleData;
+    }
+
+    public void updateSingleData(Book updateData) {
+        this.singleData = updateData;
     }
 }

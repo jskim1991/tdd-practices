@@ -21,4 +21,10 @@ public class LocalBookRepository implements BookRepository {
     public void add(NewBook newBook) {
 
     }
+
+    @Override
+    public void update(int id, UpdateBook updateBook) {
+
+    }
+
 }
