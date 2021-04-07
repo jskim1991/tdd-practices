@@ -10,6 +10,11 @@ public class Book {
         this.name = name;
     }
 
+    public Book(int id, NewBook newBook) {
+        this.id = id;
+        this.name = newBook.getName();
+    }
+
     public int getId() {
         return id;
     }

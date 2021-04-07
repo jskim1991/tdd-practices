@@ -8,4 +8,5 @@ public interface BookRepository {
 
     Book getBook(int id);
 
+    void add(NewBook newBook);
 }

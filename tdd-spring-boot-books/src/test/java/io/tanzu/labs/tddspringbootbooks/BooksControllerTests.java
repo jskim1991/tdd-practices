@@ -85,6 +85,10 @@ public class BooksControllerTests {
     public void test_getAllFromDB_returnsList() throws Exception {
 
         FakeBookRepository fakeBookRepository = new FakeBookRepository();
+
+        fakeBookRepository.add(new NewBook("Book1"));
+        fakeBookRepository.add(new NewBook("Book2"));
+
         MockMvc mockMvc = MockMvcBuilders
                 .standaloneSetup(new BooksController(fakeBookRepository))
                 .build();
@@ -100,6 +104,8 @@ public class BooksControllerTests {
     @Test
     public void test_getBookFromDB_returnsSingleBook() throws Exception {
         FakeBookRepository fakeBookRepository = new FakeBookRepository();
+        fakeBookRepository.add(new NewBook("Book1"));
+
         MockMvc mockMvc = MockMvcBuilders
                 .standaloneSetup(new BooksController(fakeBookRepository))
                 .build();

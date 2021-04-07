@@ -17,6 +17,11 @@ public class SpyBookRepository implements BookRepository {
         return null;
     }
 
+    @Override
+    public void add(NewBook newBook) {
+
+    }
+
     public int getId() {
         return id;
     }

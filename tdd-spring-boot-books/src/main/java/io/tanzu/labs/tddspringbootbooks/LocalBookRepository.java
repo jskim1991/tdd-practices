@@ -16,4 +16,9 @@ public class LocalBookRepository implements BookRepository {
     public Book getBook(int id) {
         return null;
     }
+
+    @Override
+    public void add(NewBook newBook) {
+
+    }
 }
