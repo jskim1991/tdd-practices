@@ -18,12 +18,19 @@ public class LocalBookRepository implements BookRepository {
     }
 
     @Override
-    public void add(NewBook newBook) {
+    public Book add(NewBook newBook) {
 
+        return null;
     }
 
     @Override
-    public void update(int id, UpdateBook updateBook) {
+    public Book update(int id, UpdateBook updateBook) {
+
+        return null;
+    }
+
+    @Override
+    public void delete(int id) {
 
     }
 

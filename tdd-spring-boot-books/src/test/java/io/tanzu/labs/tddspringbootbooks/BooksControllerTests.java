@@ -1,7 +1,5 @@
 package io.tanzu.labs.tddspringbootbooks;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -12,8 +10,7 @@ import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,7 +63,7 @@ public class BooksControllerTests {
 
     @Test
     public void test_getBook_returnsSingleBook() throws Exception {
-        stubBookRepository.setSingleData(new Book(1, "Book1"));
+        stubBookRepository.setGetBook_returnValue(new Book(1, "Book1"));
 
 
         mockMvc.perform(get("/books/1"))
@@ -86,7 +83,7 @@ public class BooksControllerTests {
         mockMvc.perform(get("/books/111"));
 
 
-        assertThat(spyBookRepository.getId(), equalTo(111));
+        assertThat(spyBookRepository.getGetBook_argument_id(), equalTo(111));
     }
 
     @Test
@@ -126,25 +123,106 @@ public class BooksControllerTests {
 
     @Test
     public void test_updateBook_returnsOk() throws Exception {
-        mockMvc.perform(put("/books/1"))
+        mockMvc.perform(put("/books/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void test_getBookAfterUpdateBook_returnsUpdatedBook() throws Exception {
-        stubBookRepository.setSingleData(new Book(1, "Book1"));
-        UpdateBook updateBook = new UpdateBook("Updated Book1");
-        stubBookRepository.updateSingleData(new Book(1, updateBook.getNewName()));
+    void test_updatedBook_returnsUpdatedBook() throws Exception {
+        stubBookRepository.setUpdateBook_returnValue(new Book(1, "Updated Book1"));
 
 
         mockMvc.perform(put("/books/1")
-                .content(new ObjectMapper().writeValueAsString(updateBook))
+                .content("{}")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andReturn();
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.name", equalTo("Updated Book1")))
+        ;
+    }
+
+    @Test
+    void test_updateBook_updatesBookWithCorrectInputs() throws Exception {
+        SpyBookRepository spyBookRepository = new SpyBookRepository();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new BooksController(spyBookRepository))
+                .build();
+
+        String json = "{\n" +
+                "  \"name\": \"Updated Book1\"\n" +
+                "}";
 
 
-        Book actualBook = stubBookRepository.getBook(1);
-        assertThat(actualBook.getId(), equalTo(1));
-        assertThat(actualBook.getName(), equalTo("Updated Book1"));
+        mockMvc.perform(put("/books/999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+        );
+
+
+        assertThat(spyBookRepository.getUpdateBook_argument_id(), equalTo(999));
+
+        UpdateBook expectedUpdateBook = new UpdateBook("Updated Book1");
+        assertThat(spyBookRepository.getUpdateBook_argument_updateBook(), equalTo(expectedUpdateBook));
+    }
+
+    @Test
+    void test_addBook_returnsCreated() throws Exception {
+        mockMvc.perform(post("/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void test_addBook_returnsBookAdded() throws Exception {
+        stubBookRepository.setAddBook_returnValue(new Book(1, "Book1"));
+
+        mockMvc.perform(post("/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.name", equalTo("Book1")));
+    }
+
+    @Test
+    void test_addBook_addsBookWithCorrectInputs() throws Exception {
+        SpyBookRepository spyBookRepository = new SpyBookRepository();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new BooksController(spyBookRepository))
+                .build();
+
+        String json = "{\n" +
+                "  \"name\": \"Book1\"\n" +
+                "}";
+
+        mockMvc.perform(post("/books")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON));
+
+
+        NewBook expectedNewBook = new NewBook("Book1");
+        assertThat(spyBookRepository.getAddBook_argument_book(), equalTo(expectedNewBook));
+    }
+
+    @Test
+    void test_deleteBook_returnsNoContent() throws Exception {
+        mockMvc.perform(delete("/books/1"))
+                .andExpect(status().isNoContent());
+
+    }
+
+    @Test
+    void test_deleteBook_deletesWithCorrectId() throws Exception {
+        SpyBookRepository spyBookRepository = new SpyBookRepository();
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new BooksController(spyBookRepository))
+                .build();
+
+
+        mockMvc.perform(delete("/books/999"));
+
+
+        assertThat(spyBookRepository.getDeleteBook_argument_id(), equalTo(999));
     }
 }

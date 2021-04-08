@@ -1,5 +1,6 @@
 package io.tanzu.labs.tddspringbootbooks;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 @RequestMapping("/books")
 public class BooksController {
 
-    private BookRepository repository;
+    private final BookRepository repository;
 
     public BooksController(BookRepository repository) {
         this.repository = repository;
@@ -24,8 +25,21 @@ public class BooksController {
         return repository.getBook(id);
     }
 
-    @PutMapping("/1")
-    public void updateBook() {
-
+    @PostMapping("")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Book addBook(@RequestBody NewBook newBook) {
+        return repository.add(newBook);
     }
+
+    @PutMapping("/{id}")
+    public Book updateBook(@PathVariable int id, @RequestBody UpdateBook updateBook) {
+        return repository.update(id, updateBook);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void removeBook(@PathVariable int id) {
+        repository.delete(id);
+    }
+
 }

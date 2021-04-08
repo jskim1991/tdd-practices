@@ -8,7 +8,9 @@ public interface BookRepository {
 
     Book getBook(int id);
 
-    void add(NewBook newBook);
+    Book add(NewBook newBook);
 
-    void update(int id, UpdateBook updateBook);
+    Book update(int id, UpdateBook updateBook);
+
+    void delete(int id);
 }

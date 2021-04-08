@@ -22,9 +22,4 @@ public class Book {
     public String getName() {
         return name;
     }
-
-    public Book update(UpdateBook updateBook) {
-        this.name = updateBook.getNewName();
-        return this;
-    }
 }

@@ -28,15 +28,27 @@ public class FakeBookRepository implements BookRepository {
     }
 
     @Override
-    public void add(NewBook newBook) {
+    public Book add(NewBook newBook) {
         Book book = new Book(bookMap.size() + 1, newBook);
         bookMap.put(book.getId(), book);
+        return book;
     }
 
     @Override
-    public void update(int id, UpdateBook updateBook) {
-        Book currentBook = getBook(id);
-        Book updatedBook = currentBook.update(updateBook);
+    public Book update(int id, UpdateBook updateBook) {
+        if (bookMap.containsKey(id) == false) {
+            throw new RuntimeException("No book to update for id " + id);
+        }
+        Book updatedBook = new Book(id, updateBook.getName());
         bookMap.put(id, updatedBook);
+        return updatedBook;
+    }
+
+    @Override
+    public void delete(int id) {
+        if (bookMap.containsKey(id) == false) {
+            throw new RuntimeException("No book to delete for id " + id);
+        }
+        bookMap.remove(id);
     }
 }

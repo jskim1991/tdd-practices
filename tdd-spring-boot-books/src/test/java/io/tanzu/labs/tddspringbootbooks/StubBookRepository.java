@@ -6,7 +6,9 @@ import java.util.List;
 public class StubBookRepository implements BookRepository {
 
     private List<Book> data;
-    private Book singleData;
+    private Book getBook_returnValue;
+    private Book updateBook_returnValue;
+    private Book addBook_returnValue;
 
     public StubBookRepository() {
         data = new ArrayList<>();
@@ -19,29 +21,37 @@ public class StubBookRepository implements BookRepository {
 
     @Override
     public Book getBook(int id) {
-        return singleData;
+        return getBook_returnValue;
     }
 
     @Override
-    public void add(NewBook newBook) {
-
+    public Book add(NewBook newBook) {
+        return addBook_returnValue;
     }
 
     @Override
-    public void update(int id, UpdateBook updateBook) {
-
+    public Book update(int id, UpdateBook updateBook) {
+        return updateBook_returnValue;
     }
 
+    @Override
+    public void delete(int id) {
+
+    }
 
     public void setData(List<Book> data) {
         this.data = data;
     }
 
-    public void setSingleData(Book singleData) {
-        this.singleData = singleData;
+    public void setGetBook_returnValue(Book book) {
+        this.getBook_returnValue = book;
     }
 
-    public void updateSingleData(Book updateData) {
-        this.singleData = updateData;
+    public void setUpdateBook_returnValue(Book book) {
+        this.updateBook_returnValue = book;
+    }
+
+    public void setAddBook_returnValue(Book book) {
+        this.addBook_returnValue = book;
     }
 }
